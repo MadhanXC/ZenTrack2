@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { LineChart, PlusCircle, RefreshCw, LogOut } from 'lucide-react';
+import { LineChart, PlusCircle, FileText, RefreshCw, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   Dialog,
@@ -68,7 +68,7 @@ export function Header({ onAddFund, onRefreshNav, isRefreshing, funds, userName 
   
   const ReportButton = () => (
     <Button size={isMobile ? 'icon' : 'default'} onClick={() => setReportOpen(true)}>
-      <PlusCircle className={`h-4 w-4 ${isMobile ? '' : 'mr-2'}`} />
+      <FileText className={`h-4 w-4 ${isMobile ? '' : 'mr-2'}`} />
       {!isMobile && 'Report'}
     </Button>
   );

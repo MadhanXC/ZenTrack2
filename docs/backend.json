@@ -1,0 +1,100 @@
+{
+  "entities": {
+    "Fund": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Fund",
+      "type": "object",
+      "description": "Represents a mutual fund held by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the fund (e.g., 'quant-small-cap')."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the mutual fund."
+        },
+        "schemeCode": {
+          "type": "string",
+          "description": "The unique scheme code for the fund."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the fund (e.g., 'Small Cap')."
+        },
+        "units": {
+          "type": "number",
+          "description": "The number of units held by the user."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns this fund."
+        },
+        "nav": {
+          "type": "number"
+        },
+        "currentValue": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "schemeCode",
+        "category",
+        "units",
+        "userId"
+      ]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's profile information.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The user's unique ID."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name."
+        }
+      },
+      "required": ["uid", "email", "displayName"]
+    }
+  },
+  "auth": {
+    "providers": [
+      "email"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/entities/UserProfile"
+          },
+          "description": "Stores user profile information."
+        }
+      },
+      {
+        "path": "/users/{userId}/funds/{fundId}",
+        "definition": {
+          "entityName": "Fund",
+          "schema": {
+            "$ref": "#/entities/Fund"
+          },
+          "description": "Stores the funds held by a specific user."
+        }
+      }
+    ]
+  }
+}

@@ -64,43 +64,16 @@ export function ProjectionChart({ funds }: ProjectionChartProps) {
     const annualRate = growthRate / 100;
     const periodsPerYear = frequencyMultipliers[frequency];
     
-    let futureValue = selectedFund.currentValue;
     const periodicInvestmentValue = investmentUnits * selectedFund.nav;
-    
-    data.push({ year: 0, value: Math.round(futureValue) });
+    const totalPeriodicInvestment = periodicInvestmentValue * periodsPerYear;
+
+    let currentValue = selectedFund.currentValue;
+    data.push({ year: 0, value: Math.round(currentValue) });
 
     for (let year = 1; year <= period; year++) {
-      // Calculate future value of the initial principal at the end of the current year
-      const fvOfPrincipal = selectedFund.currentValue * Math.pow(1 + annualRate, year);
-      
-      // Calculate future value of the annuity (periodic investments)
-      let fvOfAnnuity = 0;
-      if (periodicInvestmentValue > 0 && annualRate > 0) {
-        // Standard FV of Annuity Formula for end-of-period payments
-        // We calculate it for each year based on total periods up to that year
-        const totalPeriods = year * periodsPerYear;
-        const ratePerPeriod = annualRate / periodsPerYear;
-        fvOfAnnuity = periodicInvestmentValue * ((Math.pow(1 + ratePerPeriod, totalPeriods) - 1) / ratePerPeriod);
-
-        // This gives the value at the end of the last period. We need to adjust for annual compounding view if needed, but for simplicity we can sum them up.
-        // A simpler mental model for the chart is to compound the previous year's total and add new investments.
-      } else if (periodicInvestmentValue > 0) {
-        // if rate is 0
-        fvOfAnnuity = periodicInvestmentValue * periodsPerYear * year;
-      }
-      
-      // Let's use a simpler iterative approach for yearly chart points
-      let yearlyTotal = selectedFund.currentValue;
-      data.splice(1); // Clear previous calculations except year 0
-
-      for (let i = 1; i <= period; i++) {
-        const investmentThisYear = periodicInvestmentValue * periodsPerYear;
-        yearlyTotal = (yearlyTotal + investmentThisYear) * (1 + annualRate);
-        data.push({ year: i, value: Math.round(yearlyTotal) });
-      }
-      break; // exit loop after recalculating with iterative method.
+        currentValue = (currentValue + totalPeriodicInvestment) * (1 + annualRate);
+        data.push({ year: year, value: Math.round(currentValue) });
     }
-
 
     setProjectionData(data);
   }, [selectedFund, growthRate, period, investmentUnits, frequency]);
@@ -123,8 +96,8 @@ export function ProjectionChart({ funds }: ProjectionChartProps) {
         <CardDescription>Project the future value of your holdings with periodic unit additions.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-            <div className="space-y-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8 p-4 border rounded-lg">
+            <div className="space-y-2 flex-1">
                 <Label htmlFor="fund-select">Fund</Label>
                 <Select value={selectedFundId} onValueChange={setSelectedFundId} disabled={funds.length === 0}>
                     <SelectTrigger id="fund-select">
@@ -140,7 +113,7 @@ export function ProjectionChart({ funds }: ProjectionChartProps) {
                 </Select>
             </div>
              <div className="space-y-2">
-                <Label htmlFor="investment-units">Investment units</Label>
+                <Label htmlFor="investment-units">Periodic Investment (Units)</Label>
                 <Input
                     id="investment-units"
                     type="number"
@@ -185,13 +158,13 @@ export function ProjectionChart({ funds }: ProjectionChartProps) {
             </div>
         </div>
 
-        <div className="aspect-[16/9] w-full">
+        <div className="h-[25rem] w-full">
         {projectionData.length > 1 ? (
             <ChartContainer config={chartConfig} className='h-full w-full'>
               <AreaChart
                 accessibilityLayer
                 data={projectionData}
-                margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                margin={{ top: 10, right: 30, left: 20, bottom: 20 }}
               >
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">

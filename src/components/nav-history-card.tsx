@@ -86,13 +86,13 @@ export function NavHistoryCard({ funds, history, onHistoryFetched }: NavHistoryC
   return (
     <Card className='h-full'>
       <CardHeader>
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className='mb-4 lg:mb-0'>
               <CardTitle>365-Day NAV History</CardTitle>
             </div>
-            <div className="flex w-full md:w-auto items-center gap-2">
+            <div className="flex w-full lg:w-auto items-center gap-2">
                 <Select value={selectedFundId} onValueChange={setSelectedFundId} disabled={noFunds}>
-                <SelectTrigger className="w-full md:w-[280px]">
+                <SelectTrigger className="w-full lg:w-[280px]">
                     <SelectValue placeholder="Select a fund" />
                 </SelectTrigger>
                 <SelectContent>

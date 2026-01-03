@@ -86,13 +86,13 @@ export function NavHistoryCard({ funds, history, onHistoryFetched }: NavHistoryC
   return (
     <Card className='h-full'>
       <CardHeader>
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <div className='mb-4 lg:mb-0'>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className='flex-1 min-w-[200px]'>
               <CardTitle>365-Day NAV History</CardTitle>
             </div>
-            <div className="flex w-full lg:w-auto items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
                 <Select value={selectedFundId} onValueChange={setSelectedFundId} disabled={noFunds}>
-                <SelectTrigger className="w-full lg:w-[280px]">
+                <SelectTrigger className="w-full sm:w-[280px]">
                     <SelectValue placeholder="Select a fund" />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,7 +103,7 @@ export function NavHistoryCard({ funds, history, onHistoryFetched }: NavHistoryC
                     ))}
                 </SelectContent>
                 </Select>
-                <Button onClick={handleViewHistory} disabled={!selectedFund || isLoadingHistory} className='w-[180px]'>
+                <Button onClick={handleViewHistory} disabled={!selectedFund || isLoadingHistory} className='w-full sm:w-auto min-w-[120px]'>
                     {isLoadingHistory ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'View History'}
                 </Button>
             </div>

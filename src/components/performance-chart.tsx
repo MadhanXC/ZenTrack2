@@ -31,7 +31,7 @@ export function PerformanceChart({ navHistory }: PerformanceChartProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="aspect-[16/9] w-full">
+        <div className="h-[25rem] w-full">
         {hasHistory ? (
             <ChartContainer config={chartConfig} className='h-full w-full'>
               <AreaChart

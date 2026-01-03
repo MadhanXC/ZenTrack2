@@ -3,8 +3,9 @@
 import * as React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { NavHistoryEntry } from '@/lib/types';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { ChartContainer, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface PerformanceChartProps {
   navHistory: NavHistoryEntry[];
@@ -19,6 +20,7 @@ const chartConfig = {
 
 export function PerformanceChart({ navHistory }: PerformanceChartProps) {
   const hasHistory = navHistory.length > 0;
+  const isMobile = useIsMobile();
 
   return (
     <Card className='h-full'>
@@ -37,7 +39,7 @@ export function PerformanceChart({ navHistory }: PerformanceChartProps) {
               <AreaChart
                 accessibilityLayer
                 data={navHistory}
-                margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
+                margin={{ top: 10, right: isMobile ? 10 : 30, left: isMobile ? -20 : 0, bottom: 20 }}
               >
                 <defs>
                   <linearGradient id="colorNav" x1="0" y1="0" x2="0" y2="1">
@@ -51,10 +53,19 @@ export function PerformanceChart({ navHistory }: PerformanceChartProps) {
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value, index) => {
-                    if (navHistory.length < 2) return value;
-                    const interval = Math.floor(navHistory.length / 10);
-                    return index % interval === 0 ? value : '';
+                  interval={isMobile ? Math.floor(navHistory.length / 5) : Math.floor(navHistory.length / 10)}
+                  tickFormatter={(value) => {
+                      if (!value) return '';
+                      // Example: If value is "Jan 1, 2023", show "Jan '23" on mobile
+                      if (isMobile) {
+                          const date = new Date(value);
+                          if(!isNaN(date.getTime())) {
+                            const month = date.toLocaleString('default', { month: 'short' });
+                            const year = date.getFullYear().toString().slice(-2);
+                            return `${month} '${year}`;
+                          }
+                      }
+                      return value;
                   }}
                 />
                 <YAxis
